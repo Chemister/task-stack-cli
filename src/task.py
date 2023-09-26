@@ -1,24 +1,14 @@
+from dataclasses import dataclass
 import datetime
 import string
 
+@dataclass
 class Task:
     id: int
     title: string
-    detail: string
-    deadline: datetime
-    priority: int
-
-    def __init__(self, 
-                 taskId: int, 
-                 title: string, 
-                 detail: string = None, 
-                 deadline: datetime = None, 
-                 priority: int = 1) -> None:
-        self.id = taskId
-        self.title = title
-        self.detail = detail
-        self.deadline = deadline
-        self.priority = priority
+    detail: string = None
+    deadline: datetime = None
+    priority: int = 1
 
     def __eq__(self, other) -> bool:
         if isinstance(other, Task):

@@ -4,8 +4,9 @@ from typing import List
 ### todos
 # todo: define a task - ok
 # todo: figure out save file format - xml
-# todo: create a new task and save it
-# todo: handle list saving
+# todo: create a new task and save it - ok
+# todo: handle list saving 
+# todo: manage task ids
 # todo: handle creating new folders
 # todo: return list of tasks 
 # todo: modify a task's properties

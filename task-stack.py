@@ -5,10 +5,11 @@ from typing import List
 # todo: define a task - ok
 # todo: figure out save file format - xml
 # todo: create a new task and save it - ok
-# todo: handle list saving 
-# todo: manage task ids
-# todo: handle creating new folders
+# todo: handle list saving - ok
+# todo: handle creating new folders 
+# todo: refactor saveTask
 # todo: return list of tasks 
+# todo: manage task ids
 # todo: modify a task's properties
 # todo: delete a task
 # todo: create a main interactive command line application

@@ -22,7 +22,8 @@ class Task:
                     self.priority == other.priority)
         
         return False
-    
+
+
 def taskToXML(task: Task) -> string:
     return f"""<task>
     <id>{task.id}</id>
@@ -32,6 +33,7 @@ def taskToXML(task: Task) -> string:
     <priority>{task.priority}</priority>
 </task>
 """
+
 
 def saveTask(task: Task, savePath: string) -> bool :
     try:
@@ -55,15 +57,16 @@ def saveTask(task: Task, savePath: string) -> bool :
             offset = read_data.index(TASK_LIST_END_TAG)
             f.write(read_data[:offset] + taskToXML(task) + TASK_LIST_END_TAG)
 
-    #except ValueError:
-    #    print(f"ERROR: File '{savePath}' cannot be opened due to an encoding error.")
-    #    return False
+    except ValueError:
+        print(f"ERROR: File '{savePath}' cannot be opened due to an encoding error.")
+        return False
     
     except Exception as e:
         print(e)
         return False
 
     return True
+
 
 if __name__ == "__main__":
     tacheBidon = Task(1, "tâche bidon", "", datetime.datetime.today())

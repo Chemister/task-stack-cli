@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import xmlFileManager
 import datetime
 import os
 import string
@@ -37,30 +38,14 @@ def taskToXML(task: Task) -> string:
 
 def saveTask(task: Task, savePath: string) -> bool :
     try:
-        directory = "/".join(savePath.split("/")[:-1])
-
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-            
-        if not os.path.exists(savePath):
-            f = open(savePath, "w", encoding="utf-8")
-            headers = "<?xml versions=\"1.0\" encoding=\"utf-8\"?>\n" + TASK_LIST_TAG  + "\n" + TASK_LIST_END_TAG
-            f.write(headers)
-            f.close()
+        xmlFileManager.createXML(savePath, TASK_LIST_TAG)
         
-        read_data: string
-
-        with open(savePath, "r", encoding="utf-8") as f:
-            read_data = f.read()
-            if not "<?xml versions=\"1.0\" encoding=\"utf-8\"?>" in read_data:
-                raise OSError("ERROR: Not an XML file or incorrect XML header")
-            
-            if not TASK_LIST_TAG and TASK_LIST_END_TAG in read_data:
-                raise OSError("ERROR: Not a Task Stack file")
+        read_data: string = xmlFileManager.readFullXML(savePath)
+                
+        if not TASK_LIST_TAG or not TASK_LIST_END_TAG in read_data:
+            raise OSError("ERROR: Not a Task Stack file")
         
-        with open(savePath, "w", encoding="utf-8") as f:    
-            offset = read_data.index(TASK_LIST_END_TAG)
-            f.write(read_data[:offset] + taskToXML(task) + TASK_LIST_END_TAG)
+        xmlFileManager.appendXMLElement(taskToXML(task), savePath, TASK_LIST_TAG)
 
     except ValueError:
         print(f"ERROR: File '{savePath}' cannot be opened due to an encoding error.")

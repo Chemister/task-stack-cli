@@ -37,6 +37,11 @@ def taskToXML(task: Task) -> string:
 
 def saveTask(task: Task, savePath: string) -> bool :
     try:
+        directory = "/".join(savePath.split("/")[:-1])
+
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+            
         if not os.path.exists(savePath):
             f = open(savePath, "w", encoding="utf-8")
             headers = "<?xml versions=\"1.0\" encoding=\"utf-8\"?>\n" + TASK_LIST_TAG  + "\n" + TASK_LIST_END_TAG
@@ -70,7 +75,7 @@ def saveTask(task: Task, savePath: string) -> bool :
 
 if __name__ == "__main__":
     tacheBidon = Task(1, "tâche bidon", "", datetime.datetime.today())
-    if(saveTask(tacheBidon, "test.xml")):
+    if(saveTask(tacheBidon, "test1/test2/test.xml")):
         print("Succès!")
     else:
         print(":(")

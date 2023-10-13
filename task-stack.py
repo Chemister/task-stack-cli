@@ -6,7 +6,7 @@ from typing import List
 # todo: figure out save file format - xml
 # todo: create a new task and save it - ok
 # todo: handle list saving - ok
-# todo: handle creating new folders 
+# todo: handle creating new folders - ok
 # todo: refactor saveTask
 # todo: return list of tasks 
 # todo: manage task ids

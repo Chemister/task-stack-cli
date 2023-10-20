@@ -1,9 +1,10 @@
 from dataclasses import dataclass
 import xmlFileManager
-import datetime
-import os
+from datetime import datetime
 import string
 
+TASK_TAG = "<task>"
+TASK_END_TAG = "</task>" 
 TASK_LIST_TAG = "<tasks>"
 TASK_LIST_END_TAG = "</tasks>"
 @dataclass
@@ -35,6 +36,24 @@ def taskToXML(task: Task) -> string:
 </task>
 """
 
+def XMLToTask(xml: string) -> Task:
+    try:
+        id = int(xml[xml.index("<id>") + 4:xml.index("</id>")])
+        title = xml[xml.index("<title>") + 7:xml.index("</title>")]
+        detail = xml[xml.index("<detail>") + 8:xml.index("</detail>")]
+        deadline = xml[xml.index("<deadline>") + 10:xml.index("</deadline>")]
+        priority = int(xml[xml.index("<priority>") + 10:xml.index("</priority>")])
+
+        if not deadline.isspace():
+            deadline = datetime.strptime(deadline, "%Y-%m-%d %H:%M:%S.%f")
+        else:
+            deadline = None
+    
+    except Exception as e:
+        print(e)
+        return
+    
+    return Task(id, title, detail, deadline, priority)
 
 def saveTask(task: Task, savePath: string) -> bool :
     try:
@@ -57,10 +76,31 @@ def saveTask(task: Task, savePath: string) -> bool :
 
     return True
 
+def getTasksFromXML(xmlList: string, taskList: list[Task]) -> list[Task]:
+    if(TASK_TAG not in xmlList):
+        return taskList
+
+    newTaskXML = xmlList[xmlList.index(TASK_TAG):xmlList.index(TASK_END_TAG) + len(TASK_END_TAG)]
+    newList = xmlList.replace(newTaskXML, "")
+    newTask = XMLToTask(newTaskXML)
+
+    if not newTask == None:
+        taskList.append(newTask)
+
+    return getTasksFromXML(newList, taskList)
+
+def getTaskList(savePath: string) -> list[Task]:
+    taskList: list[Task] = list()
+    read_data: string = xmlFileManager.readFullXML(filePath=savePath)
+
+    if not TASK_LIST_TAG or not TASK_LIST_END_TAG in read_data:
+            raise OSError("ERROR: Not a Task Stack file")
+    
+    return getTasksFromXML(read_data, taskList)
 
 if __name__ == "__main__":
-    tacheBidon = Task(1, "tâche bidon", "", datetime.datetime.today())
+    tacheBidon = Task(1, "tâche bidon", "", datetime.today())
     if(saveTask(tacheBidon, "test1/test2/test.xml")):
-        print("Succès!")
+        print(getTaskList("test1/test2/test.xml"))
     else:
         print(":(")

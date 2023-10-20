@@ -7,7 +7,7 @@ from typing import List
 # todo: create a new task and save it - ok
 # todo: handle list saving - ok
 # todo: handle creating new folders - ok
-# todo: refactor saveTask
+# todo: refactor saveTask - ok
 # todo: return list of tasks 
 # todo: manage task ids
 # todo: modify a task's properties

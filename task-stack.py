@@ -8,11 +8,11 @@ from typing import List
 # todo: handle list saving - ok
 # todo: handle creating new folders - ok
 # todo: refactor saveTask - ok
-# todo: return list of tasks 
-# todo: manage task ids
+# todo: return list of tasks - ok
 # todo: modify a task's properties
 # todo: delete a task
 # todo: create a main interactive command line application
+# todo: manage task ids
 # todo: add a function to change sorting algorithm
 # todo: add a function to CLI to return sorted list of tasks using custom algorithm  
 # todo ### 

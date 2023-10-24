@@ -4,6 +4,9 @@ import string
 ENCODING = "utf-8"
 XMLHEADERS = "<?xml versions=\"1.0\" encoding=\"" + ENCODING + "\"?>"
 
+def writeXMLFile(xmlString: string, filePath: string):
+    with open(filePath, "w", encoding=ENCODING) as f:
+        f.write(xmlString)
 
 def createXML(filePath: string, newTag: string = None) -> bool :
     directory = "/".join(filePath.split("/")[:-1])
@@ -12,19 +15,34 @@ def createXML(filePath: string, newTag: string = None) -> bool :
         os.makedirs(directory)
             
     if not os.path.exists(filePath):
-        with open(filePath, "w", encoding=ENCODING) as f:
-            headers = XMLHEADERS + "\n"
-
-            if(newTag and not newTag.isspace()):
-                headers += newTag + "\n" + newTag[:1] + "/" + newTag[1:] 
-
-            f.write(headers)
+        headers = XMLHEADERS + "\n"
+        if(newTag and not newTag.isspace()):
+            headers += newTag + "\n" + newTag[:1] + "/" + newTag[1:]
+        writeXMLFile(headers, filePath)
 
     if os.path.exists(filePath):
         return True
     return False
 
+def getXMLElement(filePath: string, openTag: string, identifier: string = None) -> string:
+    with open(filePath, "r", encoding=ENCODING) as f:
+        read_data = f.read()
+    closeTag: string = openTag[:1] + "/" + openTag[1:]
 
+    if not identifier or  identifier.isspace():
+        index = read_data.index(openTag)
+        closeIndex = read_data.index(closeTag) + len(closeTag)
+        return read_data[index:closeIndex]      
+
+
+    index = read_data.index(identifier)
+    reversedData = read_data[index::-1]
+    reversedTag = reversed(openTag)
+    distance = reversedData.index(reversedTag)
+    index -= distance #index of <openTag>
+    closeIndex = read_data.index(closeTag, index) + len(closeTag)
+    return read_data[index:closeIndex]
+    
 def readFullXML(filePath: string) -> string :
     read_data: string 
     with open(filePath, "r", encoding=ENCODING) as f:
@@ -34,7 +52,6 @@ def readFullXML(filePath: string) -> string :
         raise OSError("ERROR: Not an XML file or incorrect XML header")
     
     return read_data
-
 
 def appendXMLElement(xmlString: string, filePath: string, xmlElementTag: string):
     if not xmlElementTag and not xmlElementTag.isspace():
@@ -50,3 +67,11 @@ def appendXMLElement(xmlString: string, filePath: string, xmlElementTag: string)
 
     with open(filePath, "w", encoding=ENCODING) as f:  
         f.write(read_data[:offset] + xmlString + endTag)
+
+def updateXMLElement(newXML: string, oldXML: string, savePath: string) -> bool:
+    xmlDocument: string = readFullXML(savePath)
+    updatedDocument = xmlDocument.replace(oldXML, newXML, 1)
+    if newXML not in updatedDocument:
+        return False
+    writeXMLFile(updatedDocument, savePath)
+    return True

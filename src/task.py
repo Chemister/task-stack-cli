@@ -7,6 +7,7 @@ TASK_TAG = "<task>"
 TASK_END_TAG = "</task>" 
 TASK_LIST_TAG = "<tasks>"
 TASK_LIST_END_TAG = "</tasks>"
+
 @dataclass
 class Task:
     id: int
@@ -64,6 +65,8 @@ def saveTask(task: Task, savePath: string) -> bool :
         if not TASK_LIST_TAG or not TASK_LIST_END_TAG in read_data:
             raise OSError("ERROR: Not a Task Stack file")
         
+        if "<id>{task.id}</id>" in read_data:
+            xmlFileManager.updateXMLElement(taskToXML(task))
         xmlFileManager.appendXMLElement(taskToXML(task), savePath, TASK_LIST_TAG)
 
     except ValueError:
@@ -75,6 +78,9 @@ def saveTask(task: Task, savePath: string) -> bool :
         return False
 
     return True
+
+def getTaskById(id: int) -> Task:
+    
 
 def getTasksFromXML(xmlList: string, taskList: list[Task]) -> list[Task]:
     if(TASK_TAG not in xmlList):
@@ -91,7 +97,7 @@ def getTasksFromXML(xmlList: string, taskList: list[Task]) -> list[Task]:
 
 def getTaskList(savePath: string) -> list[Task]:
     taskList: list[Task] = list()
-    read_data: string = xmlFileManager.readFullXML(filePath=savePath)
+    read_data: string = xmlFileManager.readFullXML(savePath)
 
     if not TASK_LIST_TAG or not TASK_LIST_END_TAG in read_data:
             raise OSError("ERROR: Not a Task Stack file")
